@@ -41,6 +41,7 @@ void setup_lora(){
 
 void send_message(String string){
   delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
+  digitalWrite(13, HIGH); //LED high
   Serial.println("Transmitting..."); // Send a message to rf95_server
   String radiopacket = string;
   Serial.println("Sending...");
@@ -50,6 +51,7 @@ void send_message(String string){
   Serial.println("Waiting for packet to complete..."); 
   delay(10);
   rf95.waitPacketSent();
+  digitalWrite(13, LOW);//LED off
 }
 
 void setup_temp() {
