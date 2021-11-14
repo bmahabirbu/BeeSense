@@ -3,9 +3,9 @@ Sensior Design  Project about Monitoring Bees
 Lora and Pi setup
 
 Current functionality:
-Feather m0 Rfm95 sends temp, rtc, IR cam (one pixel), gas data to pi
-pi saves data to excel file
-pi code launches automatically
+* Feather m0 Rfm95 sends temp, rtc, IR cam (one pixel), gas data to pi
+* pi saves data to excel file
+* pi code launches automatically
 
 Current set of functionalities to add:
 * Allow for pi to distinguish between multiple boards
