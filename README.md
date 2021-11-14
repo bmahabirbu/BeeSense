@@ -14,3 +14,9 @@ Current set of functionalities to add:
 * Microphone support (unlikely there is a bug specific to SAMD)
 * TCP to insure packages reach pi (reach goal for sure)
 * Securtiy sending messages
+
+Prototype testing parameters
+* Can feather read temp, date, IR, gas?
+* Can feather send temp, date, Ir, gas?
+* Can pi receive message?
+* Can pi store message onto usb?
