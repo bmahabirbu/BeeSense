@@ -1,5 +1,7 @@
 void setup() {
   
+  pinMode(13, OUTPUT);
+  
    PCT2075 = Adafruit_PCT2075();
    
   // put your setup code here, to run once:
