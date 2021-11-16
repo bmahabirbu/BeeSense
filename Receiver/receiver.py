@@ -10,6 +10,7 @@ Author: Brent Rubell for Adafruit Industries
 """
 # Import Python System Libraries
 import time
+import csv
 import subprocess
 from time import strftime
 # Import Blinka Libraries
@@ -70,11 +71,12 @@ while True:
         packet_text = str(prev_packet, "utf-8")
         display.text('RX: ', 0, 0, 1)
         display.text("Message Received", 25, 0, 1)
+	packet_array = packet_text.split(",")
         
         try:
         
             with open("/media/pi/BEE_DRIVE/messages.csv", "a") as log:
-                log.write("{0},{1}\n".format(strftime("%Y-%m-%d %H:%M:%S"),str(packet_text)))
+                csv.writer(log).writerow(packet_array)
         except:
             print("Cant open usb to save excel file")
 		
