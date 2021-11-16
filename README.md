@@ -4,7 +4,7 @@ Lora and Pi setup
 
 Current functionality:
 * Feather m0 Rfm95 sends temp, rtc, IR cam (one pixel), gas data to pi
-* pi saves data to excel file
+* pi saves data to excel file via USB drive named BEE_DRIVE formatted FAT32
 * pi code launches automatically
 
 Current set of functionalities to add:
