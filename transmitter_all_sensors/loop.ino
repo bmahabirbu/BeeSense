@@ -1,4 +1,8 @@
 void loop() {
+  
+  packetnum++;
+  
+  packetnum_str = "Packet number: "+String(packetnum);
 
   print_temp();
   print_rtc();
@@ -35,7 +39,7 @@ void loop() {
   String noise_str = String(randNumber);
   String mic_str = "Fake mic noise: "+noise_str;
 
-  String msg = temp_message+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
+  String msg = packetnum_str+", "+temp_message+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
   send_message(msg);
 
   delay(3000);
