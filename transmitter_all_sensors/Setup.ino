@@ -15,7 +15,8 @@ void setup() {
    }
 
    setup_lora();
-   setup_temp();
+   setup_temp_humid();
+   //setup_temp();
    setup_rtc();
    setup_ir();
    setup_gas();

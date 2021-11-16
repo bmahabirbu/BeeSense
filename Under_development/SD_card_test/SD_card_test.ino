@@ -29,7 +29,7 @@ File root;
 void setup() {
   //Set pin 8 high for use with SD card 
   pinMode(8, OUTPUT);
-  digitalWrite(13, HIGH);
+  digitalWrite(8, HIGH);
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   while (!Serial) {

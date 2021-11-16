@@ -6,6 +6,7 @@
 #include <Adafruit_AMG88xx.h>
 #include "Adafruit_SGP30.h"
 #include "RTClib.h"
+#include <Adafruit_AHTX0.h>
 
 //for feather m0  
 #define RFM95_CS 8
@@ -20,6 +21,7 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
 int packetnum = 0; 
 
+Adafruit_AHTX0 aht;
 Adafruit_AMG88xx amg;
 Adafruit_SGP30 sgp;
 Adafruit_PCT2075 PCT2075;

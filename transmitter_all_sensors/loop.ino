@@ -4,7 +4,8 @@ void loop() {
   
   String packetnum_str = "Packet number: "+String(packetnum);
 
-  print_temp();
+  //print_temp();
+  print_temp_humid();
   print_rtc();
   print_ir();
   print_gas();
@@ -13,9 +14,15 @@ void loop() {
   Serial.print("Fake Mic val: ");
   Serial.println(randNumber);
 
-  String temp_string = "TemperatureF*: ";
-  String temp_num = String((PCT2075.getTemperature()*9/5)+32, 2);
-  String temp_message = temp_string+temp_num;
+//  String temp_string = "TemperatureF*: ";
+//  String temp_num = String((PCT2075.getTemperature()*9/5)+32, 2);
+//  String temp_message = temp_string+temp_num;
+
+  sensors_event_t humidity, temp;
+  aht.getEvent(&humidity, &temp);
+  String temp_str = String((temp.temperature*9/5)+32, 2);
+  String humid_str = String(humidity.relative_humidity, 2);
+  String temp_humid_str = "Temperature F*: "+temp_str+", "+"Humidity %rH: "+humid_str;
 
   DateTime now = rtc.now();
   String date_year = String(now.year(), DEC);
@@ -39,7 +46,7 @@ void loop() {
   String noise_str = String(randNumber);
   String mic_str = "Fake mic noise: "+noise_str;
 
-  String msg = packetnum_str+", "+temp_message+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
+  String msg = packetnum_str+", "+temp_humid_str+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
   send_message(msg);
 
   delay(3000);

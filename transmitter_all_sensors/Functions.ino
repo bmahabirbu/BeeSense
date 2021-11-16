@@ -1,3 +1,19 @@
+void setup_temp_humid(){
+
+  if (! aht.begin()) {
+    Serial.println("Could not find AHT? Check wiring");
+    while (1) delay(10);
+  }
+  Serial.println("AHT10 or AHT20 found");
+}
+
+void print_temp_humid(){
+  sensors_event_t humidity, temp;
+  aht.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
+  Serial.print("Temperature: "); Serial.print((temp.temperature*9/5)+32); Serial.println(" degrees F");
+  Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
+}
+
 void setup_lora(){
   pinMode(RFM95_RST, OUTPUT);
   digitalWrite(RFM95_RST, HIGH);
@@ -55,18 +71,18 @@ void send_message(String string){
   digitalWrite(13, LOW);//LED off
 }
 
-void setup_temp() {
-   if (!PCT2075.begin()) {
-    Serial.println("Couldn't find PCT2075 chip");
-    while (1);
-  }
-
-  Serial.println("Found PCT2075 chip");
-}
-
-void print_temp() {
-  Serial.print("Temperature: "); Serial.print((PCT2075.getTemperature()*9/5)+32);Serial.println(" F");
-}
+//void setup_temp() {
+//   if (!PCT2075.begin()) {
+//    Serial.println("Couldn't find PCT2075 chip");
+//    while (1);
+//  }
+//
+//  Serial.println("Found PCT2075 chip");
+//}
+//
+//void print_temp() {
+//  Serial.print("Temperature: "); Serial.print((PCT2075.getTemperature()*9/5)+32);Serial.println(" F");
+//}
 
 void setup_rtc() {
   if (! rtc.begin()) {
