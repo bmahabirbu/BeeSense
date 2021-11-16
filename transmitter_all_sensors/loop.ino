@@ -27,7 +27,10 @@ void loop() {
   String ir_str = "First IR pixel temp in F: "+pixel_str;
 
   String eco2_str = String(sgp.eCO2);
-  String gas_str = "eCo2: "+eco2_str+" ppm";
+  String TVOC_str = String(sgp.TVOC);
+  String rawH2_str = String(sgp.rawH2);
+  String rawEthanol_str = String(sgp.rawEthanol);
+  String gas_str = "eCo2: "+eco2_str+" ppm" + "TVOC: "+TVOC_str+" ppb\t"+"Raw H2: "+rawH2_str+" \t"+"Raw Ethanol: "+rawEthanol_str+"";
 
   String noise_str = String(randNumber);
   String mic_str = "Fake mic noise: "+noise_str;
