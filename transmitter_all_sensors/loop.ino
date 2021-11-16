@@ -2,7 +2,7 @@ void loop() {
   
   packetnum++;
   
-  packetnum_str = "Packet number: "+String(packetnum);
+  String packetnum_str = "Packet number: "+String(packetnum);
 
   print_temp();
   print_rtc();
