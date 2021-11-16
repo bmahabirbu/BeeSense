@@ -73,7 +73,7 @@ while True:
         
         try:
         
-            with open("/media/pi/CRUZ/messages.csv", "a") as log:
+            with open("/media/pi/BEE_DRIVE/messages.csv", "a") as log:
                 log.write("{0},{1}\n".format(strftime("%Y-%m-%d %H:%M:%S"),str(packet_text)))
         except:
             print("Cant open usb to save excel file")
