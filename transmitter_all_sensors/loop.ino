@@ -30,12 +30,12 @@ void loop() {
   String TVOC_str = String(sgp.TVOC);
   String rawH2_str = String(sgp.rawH2);
   String rawEthanol_str = String(sgp.rawEthanol);
-  String gas_str = "eCo2: "+eco2_str+" ppm " + "TVOC: "+TVOC_str+" ppb "+"Raw H2: "+rawH2_str+" "+"Raw Ethanol: "+rawEthanol_str+"";
+  String gas_str = "eCo2: "+eco2_str+" ppm, " + "TVOC: "+TVOC_str+" ppb, "+"Raw H2: "+rawH2_str+", "+"Raw Ethanol: "+rawEthanol_str;
 
   String noise_str = String(randNumber);
   String mic_str = "Fake mic noise: "+noise_str;
 
-  String msg = temp_message+" "+date+" "+ir_str+" "+gas_str+" "+mic_str;
+  String msg = temp_message+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
   send_message(msg);
 
   delay(3000);
