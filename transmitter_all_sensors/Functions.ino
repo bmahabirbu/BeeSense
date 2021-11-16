@@ -64,7 +64,7 @@ void setup_temp() {
 }
 
 void print_temp() {
-  Serial.print("Temperature: "); Serial.print(PCT2075.getTemperature());Serial.println(" C");
+  Serial.print("Temperature: "); Serial.print((PCT2075.getTemperature()*9/5)+32);Serial.println(" F");
 }
 
 void setup_rtc() {
@@ -174,9 +174,10 @@ void setup_ir() {
 
 void print_ir() {
    amg.readPixels(pixels);
+   Serial.println("IR cam temp 8x8 array F*: ");
    Serial.print("[");
   for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
-    Serial.print(pixels[i-1]);
+    Serial.print((pixels[i-1]*9/5)+32);
     Serial.print(", ");
     if( i%8 == 0 ) Serial.println();
   }

@@ -9,8 +9,8 @@ void loop() {
   Serial.print("Fake Mic val: ");
   Serial.println(randNumber);
 
-  String temp_string = "TemperatureC*: ";
-  String temp_num = String(PCT2075.getTemperature(), 2);
+  String temp_string = "TemperatureF*: ";
+  String temp_num = String((PCT2075.getTemperature()*9/5)+32, 2);
   String temp_message = temp_string+temp_num;
 
   DateTime now = rtc.now();
@@ -23,8 +23,8 @@ void loop() {
 
   String date = "Date now: "+date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
 
-  String pixel_str = String(pixels[0], 2);
-  String ir_str = "First IR pixel temp: "+pixel_str;
+  String pixel_str = String((pixels[0]*9/5)+32, 2);
+  String ir_str = "First IR pixel temp in F: "+pixel_str;
 
   String eco2_str = String(sgp.eCO2);
   String gas_str = "eCo2: "+eco2_str+" ppm";
