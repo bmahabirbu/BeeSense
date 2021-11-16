@@ -45,6 +45,7 @@ void send_message(String string){
   Serial.println("Transmitting..."); // Send a message to rf95_server
   String radiopacket = string;
   Serial.println("Sending...");
+  Serial.println(string);
   delay(10);
   rf95.send((uint8_t *)radiopacket.c_str(),radiopacket.length());
 
