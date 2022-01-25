@@ -18,7 +18,12 @@
   modified 2 Feb 2014
   by Scott Fitzgerald
 
-  This example code is in the public domain.
+  This code will be modified to allow for reading
+  and writing of scripts
+
+  add lora to test switching capabilities
+
+  
 
 */
 #include <SPI.h>

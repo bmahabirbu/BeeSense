@@ -1,4 +1,5 @@
 // All sensor test code
+// Code to switch pin 8 for lora/sd card
 #include <SPI.h>
 #include <RH_RF95.h>
 #include <Adafruit_PCT2075.h>
