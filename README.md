@@ -20,3 +20,7 @@ Prototype testing parameters
 * Can feather send temp, date, Ir, gas?
 * Can pi receive message?
 * Can pi store message onto usb?
+
+Current problems
+* Mic cant function with other sensors
+* Keep track of pin 8 switches for lora and sd card
