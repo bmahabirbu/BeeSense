@@ -9,10 +9,10 @@ void loop() {
   print_rtc();
   print_ir();
   print_gas();
-  //Fake mic code
-  randNumber = random(1000,1500);
-  Serial.print("Fake Mic val: ");
-  Serial.println(randNumber);
+  // mic code
+  int mic_value = analogRead(A0);
+  Serial.print("Mic val: ");
+  Serial.println(mic_value);
 
 //  String temp_string = "TemperatureF*: ";
 //  String temp_num = String((PCT2075.getTemperature()*9/5)+32, 2);
@@ -43,8 +43,8 @@ void loop() {
   String rawEthanol_str = String(sgp.rawEthanol);
   String gas_str = "eCo2: "+eco2_str+" ppm, " + "TVOC: "+TVOC_str+" ppb, "+"Raw H2: "+rawH2_str+", "+"Raw Ethanol: "+rawEthanol_str;
 
-  String noise_str = String(randNumber);
-  String mic_str = "Fake mic noise: "+noise_str;
+  String noise_str = String(analogRead(A0));
+  String mic_str = "mic noise: "+noise_str;
 
   String msg = packetnum_str+", "+temp_humid_str+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
   send_message(msg);
