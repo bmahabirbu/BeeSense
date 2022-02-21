@@ -8,12 +8,6 @@ void setup() {
   Serial.begin(115200);
   // Wait until serial port is opened
   
-  while (!Serial)
-  {
-    delay(1);
-    Serial.println("waiting for serial to start");
-   }
-
    setup_lora();
    setup_temp_humid();
    //setup_temp();
