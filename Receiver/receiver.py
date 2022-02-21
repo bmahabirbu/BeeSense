@@ -55,7 +55,9 @@ while True:
     
     if not btnA.value:
         #safe shutdown
+        display.fill(0)
         print("Safe Shutdown in now...")
+        display.text("Safe Shutdown in now...", 15, 0, 1)
         time.sleep(0.5)
         subprocess.call("sudo shutdown now", shell=True)
 
@@ -72,6 +74,16 @@ while True:
         display.text('RX: ', 0, 0, 1)
         display.text("Message Received", 25, 0, 1)
         packet_array = packet_text.split(",")
+        
+        #print(float(packet_array[1].split(": ")[1]))
+        #checks temperature
+        if float(packet_array[1].split(": ")[1]) > 80.0:
+            display.fill(0)
+            print("Sending Email...")
+            display.text("Sending Email...", 15, 0, 1)
+            subprocess.call("ls", shell=True)
+            subprocess.call("msmtp -t < message.txt", shell=True)
+            
         
         try:
         
