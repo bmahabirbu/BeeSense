@@ -7,11 +7,16 @@ void setup_temp_humid(){
   Serial.println("AHT10 or AHT20 found");
 }
 
-void print_temp_humid(){
+String print_temp_humid(){
   sensors_event_t humidity, temp;
   aht.getEvent(&humidity, &temp);// populate temp and humidity objects with fresh data
   Serial.print("Temperature: "); Serial.print((temp.temperature*9/5)+32); Serial.println(" degrees F");
   Serial.print("Humidity: "); Serial.print(humidity.relative_humidity); Serial.println("% rH");
+  
+  String temp_str = String((temp.temperature*9/5)+32, 2);
+  String humid_str = String(humidity.relative_humidity, 2);
+  String temp_humid_str = "Temperature F*: "+temp_str+", "+"Humidity %rH: "+humid_str;
+  return temp_humid_str;
 }
 
 void setup_lora(){
@@ -71,19 +76,6 @@ void send_message(String string){
   digitalWrite(13, LOW);//LED off
 }
 
-//void setup_temp() {
-//   if (!PCT2075.begin()) {
-//    Serial.println("Couldn't find PCT2075 chip");
-//    while (1);
-//  }
-//
-//  Serial.println("Found PCT2075 chip");
-//}
-//
-//void print_temp() {
-//  Serial.print("Temperature: "); Serial.print((PCT2075.getTemperature()*9/5)+32);Serial.println(" F");
-//}
-
 void setup_rtc() {
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -100,15 +92,22 @@ void setup_rtc() {
   float drift_unit = 4.34; 
   // float drift_unit = 4.069; 
   int offset = round(deviation_ppm / drift_unit);
+  // Un-comment to perform calibration once drift (seconds) and observation period (seconds) are correct
   // rtc.calibrate(PCF8523_TwoHours, offset); 
+  // Un-comment to cancel previous calibration
   // rtc.calibrate(PCF8523_TwoHours, 0); 
   Serial.println("Offset is ");
   Serial.println(offset); // Print to control offset
+
+  //un-comment to reset RTC
+  
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   
 }
 
-void print_rtc() {
+String print_rtc() {
   DateTime now = rtc.now();
+  
   Serial.print(now.year(), DEC);
   Serial.print('/');
   Serial.print(now.month(), DEC);
@@ -123,6 +122,16 @@ void print_rtc() {
   Serial.print(':');
   Serial.print(now.second(), DEC);
   Serial.println();
+
+  String date_year = String(now.year(), DEC);
+  String date_month = String(now.month(), DEC);
+  String date_day = String(now.day(), DEC);
+  String date_hour = String(now.hour(), DEC);
+  String date_min = String(now.minute(), DEC);
+  String date_sec = String(now.second(), DEC);
+  String date = "Date now: "+date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
+
+  return date;
   
 }
 
@@ -139,20 +148,28 @@ void setup_gas() {
   Serial.println(sgp.serialnumber[2], HEX);
 }
 
-void print_gas() {
+String print_gas() {
   if (! sgp.IAQmeasure()) {
     Serial.println("Measurement failed");
-    return;
+     return "Raw Measurement failed";
   }
   Serial.print("TVOC "); Serial.print(sgp.TVOC); Serial.print(" ppb\t");
   Serial.print("eCO2 "); Serial.print(sgp.eCO2); Serial.println(" ppm");
 
   if (! sgp.IAQmeasureRaw()) {
     Serial.println("Raw Measurement failed");
-    return;
+    return "Raw Measurement failed";
   }
   Serial.print("Raw H2 "); Serial.print(sgp.rawH2); Serial.print(" \t");
   Serial.print("Raw Ethanol "); Serial.print(sgp.rawEthanol); Serial.println("");
+
+  String eco2_str = String(sgp.eCO2);
+  String TVOC_str = String(sgp.TVOC);
+  String rawH2_str = String(sgp.rawH2);
+  String rawEthanol_str = String(sgp.rawEthanol);
+  String gas_str = "eCo2: "+eco2_str+" ppm, " + "TVOC: "+TVOC_str+" ppb, "+"Raw H2: "+rawH2_str+", "+"Raw Ethanol: "+rawEthanol_str;
+  
+  return gas_str;
  
 //  delay(1000);
 //
@@ -189,7 +206,7 @@ void setup_ir() {
   delay(100); // let sensor boot up
 }
 
-void print_ir() {
+String print_ir() {
    amg.readPixels(pixels);
    Serial.println("IR cam temp 8x8 array F*: ");
    Serial.print("[");
@@ -200,5 +217,110 @@ void print_ir() {
   }
   Serial.println("]");
   Serial.println();
+
+  String pixel_str = String((pixels[0]*9/5)+32, 2);
+  String ir_str = "First IR pixel temp in F: "+pixel_str;
+
+  return ir_str;
   
+}
+
+String print_mic() {
+  // mic code
+  int mic_value = analogRead(A0);
+  
+  Serial.print("Mic val: ");
+  Serial.println(mic_value);
+
+  String noise_str = String(mic_value);
+  String mic_str = "mic noise: "+noise_str;
+
+  return mic_str;
+
+}
+
+void setup_sd_card(){
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(10)) {
+    Serial.println("initialization failed!");
+    while (1);
+  }
+  Serial.println("initialization done.");
+}
+
+void lora_switch(bool flag) {
+  if(flag == true){
+    digitalWrite(8, LOW);
+    delay(30);
+  }
+  else {
+    digitalWrite(8, HIGH);
+    delay(30);
+  }
+}
+
+void read_config(){
+
+  int i = 0;
+
+  char file_str[25];
+  char* str_split;
+
+  //switch cs pin
+  lora_switch(false);
+  
+  // open the file for reading:
+  myFile = SD.open("config.txt");
+  if (myFile) {
+    Serial.println("config.txt:");
+
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      //Serial.write(myFile.read());
+      file_str[i]=myFile.read();
+      i++;
+    }
+
+    str_split = strtok (file_str,":");
+    Serial.println(str_split);
+
+    Serial.println("\n");
+
+    
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening config.txt");
+  }
+
+  //switch cs pin
+  lora_switch(true);
+}
+
+void log_data(String msg){
+
+  //switch cs pin
+  lora_switch(false);
+  
+   // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  myFile = SD.open("log.txt", FILE_WRITE);
+
+  // if the file opened okay, write to it:
+  if (myFile) {
+    Serial.print("Writing to log.txt...");
+    myFile.println(msg);
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening log.txt");
+  }
+
+  //switch cs pin
+  lora_switch(true);
+
 }

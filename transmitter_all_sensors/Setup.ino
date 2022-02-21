@@ -1,12 +1,14 @@
 void setup() {
   
-  pinMode(13, OUTPUT);
-  
-   PCT2075 = Adafruit_PCT2075();
+   pinMode(13, OUTPUT);
+   pinMode(8, OUTPUT);
    
-  // put your setup code here, to run once:
-  Serial.begin(115200);
-  // Wait until serial port is opened
+   Serial.begin(115200);
+
+   //for sd card first
+   //lora_switch(false);
+   //after ur done
+   //lora_switch(true);
   
    setup_lora();
    setup_temp_humid();
@@ -14,9 +16,9 @@ void setup() {
    setup_rtc();
    setup_ir();
    setup_gas();
-  
+   setup_sd_card();
 
-  //fake mic set up
-   randomSeed(analogRead(0));
+   read_config();
+ 
 
 }

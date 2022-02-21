@@ -44,7 +44,8 @@
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-File root;
+File myFile;
+String msg = "Hello world";
 
 void setup() {
   pinMode(8, OUTPUT);
@@ -77,43 +78,18 @@ void setup() {
 
 void loop() {
   
-  //print sd card
-  root = SD.open("/");
-  printDirectory(root, 0);
-  Serial.println("done!");
+  //print sd card root directory
+  read_config();
+  log_data(msg);
+  
   //switch cs pin
   lora_switch(true);
   
   //send message
-  String msg = "Hellow world";
   send_message(msg);
   
   //switch cs pin
   lora_switch(false);
-}
-
-void printDirectory(File dir, int numTabs) {
-  while (true) {
-
-    File entry =  dir.openNextFile();
-    if (! entry) {
-      // no more files
-      break;
-    }
-    for (uint8_t i = 0; i < numTabs; i++) {
-      Serial.print('\t');
-    }
-    Serial.print(entry.name());
-    if (entry.isDirectory()) {
-      Serial.println("/");
-      printDirectory(entry, numTabs + 1);
-    } else {
-      // files have sizes, directories do not
-      Serial.print("\t\t");
-      Serial.println(entry.size(), DEC);
-    }
-    entry.close();
-  }
 }
 
 
@@ -175,4 +151,41 @@ void lora_switch(bool flag) {
     digitalWrite(8, HIGH);
     delay(10);
   }
+}
+
+void read_config(){
+  // open the file for reading:
+  myFile = SD.open("config.txt");
+  if (myFile) {
+    Serial.println("config.txt:");
+
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening config.txt");
+  }
+}
+
+void log_data(String msg){
+   // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  myFile = SD.open("log.txt", FILE_WRITE);
+
+  // if the file opened okay, write to it:
+  if (myFile) {
+    Serial.print("Writing to log.txt...");
+    myFile.println(msg);
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening log.txt");
+  }
+
 }

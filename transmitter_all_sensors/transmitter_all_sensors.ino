@@ -1,5 +1,7 @@
 // All sensor test code
-// Code to switch pin 8 for lora/sd card
+#include <SD.h>
+//Set pin 8 high for use with SD card 
+//Set pin 8 low after finished with the sd card
 #include <SPI.h>
 #include <RH_RF95.h>
 #include <Adafruit_PCT2075.h>
@@ -19,8 +21,13 @@
 
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
-
+//keep track of packets sent
 int packetnum = 0; 
+
+//saves lines of file to list
+
+//SD card initalizer
+File myFile;
 
 Adafruit_AHTX0 aht;
 Adafruit_AMG88xx amg;
@@ -29,15 +36,6 @@ Adafruit_PCT2075 PCT2075;
 RTC_PCF8523 rtc;
 //for gas sensor
 int counter = 0;
-//for mic
-long randNumber;
-//not needed
-uint32_t getAbsoluteHumidity(float temperature, float humidity) {
-    // approximation formula from Sensirion SGP30 Driver Integration chapter 3.15
-    const float absoluteHumidity = 216.7f * ((humidity / 100.0f) * 6.112f * exp((17.62f * temperature) / (243.12f + temperature)) / (273.15f + temperature)); // [g/m^3]
-    const uint32_t absoluteHumidityScaled = static_cast<uint32_t>(1000.0f * absoluteHumidity); // [mg/m^3]
-    return absoluteHumidityScaled;
-}
 //for ir
 float pixels[AMG88xx_PIXEL_ARRAY_SIZE];
 //for rtc
