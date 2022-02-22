@@ -1,97 +1,108 @@
-/*
-  Listfiles
+// ArduinoJson - arduinojson.org
+// Copyright Benoit Blanchon 2014-2018
+// MIT License
 
-  This example shows how print out the files in a
-  directory on a SD card
-
-  The circuit:
-   SD card attached to SPI bus as follows:
- ** MOSI - pin 11
- ** MISO - pin 12
- ** CLK - pin 13
- ** CS - pin 8 fpr adsamd21
-
-  created   Nov 2010
-  by David A. Mellis
-  modified 9 Apr 2012
-  by Tom Igoe
-  modified 2 Feb 2014
-  by Scott Fitzgerald
-
-  This code will be modified to allow for reading
-  and writing of scripts
-
-  add lora to test switching capabilities
-
-  //Set pin 8 high for use with SD card 
-  //Set pin 8 low after finished with the sd card
-
-  
-
-*/
-#include <SPI.h>
+#include <ArduinoJson.h>
 #include <SD.h>
+#include <SPI.h>
 #include <RH_RF95.h>
+#include "RTClib.h"
 
 //for feather m0  
 #define RFM95_CS 8
 #define RFM95_RST 4
 #define RFM95_INT 3
-
-// Change to 434.0 or other frequency, must match RX's freq!
 #define RF95_FREQ 905.5
-
-// Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
-File myFile;
-String msg = "Hello world";
+// Configuration that we'll store on disk
+struct Config {
+  const char* boardname;
+  int time_to_send;
+};
+
+const char *filename = "config.txt";  // <- SD library uses 8.3 filenames
+Config config;                         // <- global configuration object
+
+// Loads the configuration from a file
+void loadConfiguration(const char *filename, Config &config) {
+  // Open file for reading
+  File file = SD.open("config.txt");
+
+  // Allocate the memory pool on the stack.
+  // Don't forget to change the capacity to match your JSON document.
+  // Use arduinojson.org/assistant to compute the capacity.
+  StaticJsonDocument<96> doc;
+
+  // Parse the root object
+  DeserializationError error = deserializeJson(doc, file);
+
+  if (error) {
+    Serial.print("deserializeJson() failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+
+  // Copy values from the JsonObject to the Config
+  config.boardname = doc["boardname"]; 
+  config.time_to_send = doc["time_to_send"]; 
+  
+
+  // Close the file (File's destructor doesn't close the file)
+  file.close();
+
+  Serial.println(config.boardname);
+  Serial.println(config.time_to_send);
+}
+
+// Prints the content of a file to the Serial
+void printFile(const char *filename) {
+  File myFile = SD.open("config.txt");
+  if (myFile) {
+    Serial.println("config.txt:");
+
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening config.txt");
+  }
+}
 
 void setup() {
-  pinMode(8, OUTPUT);
-  lora_switch(false);
-   
-  // Open serial communications and wait for port to open:
-  Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
-
-  Serial.print("Initializing SD card...");
-
-  if (!SD.begin(10)) {
-    Serial.println("initialization failed!");
-    while (1);
-  }
-  Serial.println("initialization done.");
-
-  //switch cs pin
-  lora_switch(true);
   
-  //setup lora
+  pinMode(8, OUTPUT);
+  digitalWrite(8, HIGH);
+  
   setup_lora();
   
-  //switch cs pin
-  lora_switch(false);
-   
+  setup_sd_card();
+  
+  //digitalWrite(8, LOW);
+  //delay(30);
+  
+  // Initialize serial port
+  Serial.begin(9600);
+  while (!Serial) continue;
+
+  // Dump config file
+  Serial.println(F("Print config file..."));
+  printFile(filename);
+
+  // Should load default config if run for the first time
+  Serial.println(F("Loading configuration..."));
+  loadConfiguration(filename, config);
+
+
 }
 
 void loop() {
-  
-  //print sd card root directory
-  read_config();
-  log_data(msg);
-  
-  //switch cs pin
-  lora_switch(true);
-  
-  //send message
-  send_message(msg);
-  
-  //switch cs pin
-  lora_switch(false);
+  // not used in this example
 }
-
 
 void setup_lora(){
   pinMode(RFM95_RST, OUTPUT);
@@ -118,74 +129,28 @@ void setup_lora(){
     while (1);
   }
   Serial.println("LoRa radio init OK!");
+
+  // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM
   if (!rf95.setFrequency(RF95_FREQ)) {
     Serial.println("setFrequency failed");
     while (1);
   }
   Serial.print("Set Freq to: "); Serial.println(RF95_FREQ);
+  
+  // Defaults after init are 434.0MHz, 13dBm, Bw = 125 kHz, Cr = 4/5, Sf = 128chips/symbol, CRC on
+
+  // The default transmitter power is 13dBm, using PA_BOOST.
+  // If you are using RFM95/96/97/98 modules which uses the PA_BOOST transmitter pin, then 
+  // you can set transmitter powers from 5 to 23 dBm:
   rf95.setTxPower(23, false);
 }
 
-void send_message(String string){
-  delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
-  digitalWrite(13, HIGH); //LED high
-  Serial.println("Transmitting..."); // Send a message to rf95_server
-  String radiopacket = string;
-  Serial.println("Sending...");
-  Serial.println(string);
-  delay(10);
-  rf95.send((uint8_t *)radiopacket.c_str(),radiopacket.length());
+void setup_sd_card(){
+  Serial.print("Initializing SD card...");
 
-  Serial.println("Waiting for packet to complete..."); 
-  delay(10);
-  rf95.waitPacketSent();
-  digitalWrite(13, LOW);//LED off
-}
-
-void lora_switch(bool flag) {
-  if(flag == true){
-    digitalWrite(8, LOW);
-    delay(10);
+  if (!SD.begin(10)) {
+    Serial.println("initialization failed!");
+    while (1);
   }
-  else {
-    digitalWrite(8, HIGH);
-    delay(10);
-  }
-}
-
-void read_config(){
-  // open the file for reading:
-  myFile = SD.open("config.txt");
-  if (myFile) {
-    Serial.println("config.txt:");
-
-    // read from the file until there's nothing else in it:
-    while (myFile.available()) {
-      Serial.write(myFile.read());
-    }
-    // close the file:
-    myFile.close();
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening config.txt");
-  }
-}
-
-void log_data(String msg){
-   // open the file. note that only one file can be open at a time,
-  // so you have to close this one before opening another.
-  myFile = SD.open("log.txt", FILE_WRITE);
-
-  // if the file opened okay, write to it:
-  if (myFile) {
-    Serial.print("Writing to log.txt...");
-    myFile.println(msg);
-    // close the file:
-    myFile.close();
-    Serial.println("done.");
-  } else {
-    // if the file didn't open, print an error:
-    Serial.println("error opening log.txt");
-  }
-
+  Serial.println("initialization done.");
 }
