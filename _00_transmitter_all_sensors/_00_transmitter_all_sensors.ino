@@ -28,11 +28,15 @@ int packetnum = 0;
 int ref_min = 0;
 int cur_min;
 
+//sd cars stuff
 struct Config {
   const char* boardname;
+  const char* hivename;
   int time_to_send;
 };
 Config config;
+
+String config_str;
 
 //SD card initalizer
 File myFile;
@@ -51,7 +55,7 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 
 //function to get config from sd card
 //function needs to be here for various compiler related issues
-void loadConfiguration(Config &config) {
+String loadConfiguration(Config &config) {
 
   //switch cs pin
   digitalWrite(8, HIGH);
@@ -63,7 +67,7 @@ void loadConfiguration(Config &config) {
   // Allocate the memory pool on the stack.
   // Don't forget to change the capacity to match your JSON document.
   // Use arduinojson.org/assistant to compute the capacity.
-  StaticJsonDocument<96> doc;
+  StaticJsonDocument<512> doc;
 
   // Parse the root object
   DeserializationError error = deserializeJson(doc, myFile);
@@ -71,18 +75,27 @@ void loadConfiguration(Config &config) {
   if (error) {
     Serial.print("deserializeJson() failed: ");
     Serial.println(error.c_str());
-    return;
+    return "Error";
   }
 
   // Copy values from the JsonObject to the Config
   config.boardname = doc["boardname"]; 
-  config.time_to_send = doc["time_to_send"];  
-  
+  config.hivename = doc["hivename"];
+  config.time_to_send = doc["time_to_send"];
 
+  String boardname_str = "Board name: "+String(config.boardname)+", ";
+  String hivename_str = +"Hive name: "+String(config.hivename)+", ";
+  String time_to_send_str = "Send message every: "+String(config.time_to_send)+" minutes";
+  String config_str = boardname_str+hivename_str+time_to_send_str;
+   
   // Close the file (File's destructor doesn't close the file)
   myFile.close();
 
   //switch cs pin
   digitalWrite(8, LOW);
   delay(30);
+
+  return config_str;
+
+  
 }
