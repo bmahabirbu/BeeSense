@@ -72,7 +72,7 @@ void loop() {
   log_data(msg);
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
-  delay(30);
+  delay(18000);
   
 
 }
