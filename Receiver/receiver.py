@@ -78,6 +78,8 @@ while True:
         #print(float(packet_array[1].split(": ")[1]))
         #checks temperature
         if "sensor" in packet_array[0].split(": ")[1]:
+            print("Checking temp: ")
+            print(packet_array[3].split(": ")[1])
             if float(packet_array[3].split(": ")[1]) > 80.0:
                 display.fill(0)
                 print("Sending Email...")

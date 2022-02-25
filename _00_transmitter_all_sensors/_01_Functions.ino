@@ -24,12 +24,7 @@ void setup_lora(){
   pinMode(RFM95_RST, OUTPUT);
   digitalWrite(RFM95_RST, HIGH);
 
-  Serial.begin(115200);
-  while (!Serial) {
-    delay(1);
-  }
-
-  delay(100);
+  delay(1000);
 
   Serial.println("Feather LoRa TX Test!");
 
