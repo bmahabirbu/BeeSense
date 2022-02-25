@@ -17,17 +17,20 @@
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
+//sd card stuff
 struct Config {
   const char* boardname;
+  const char* hivename;
   int time_to_send;
 };
 Config config;
+String config_str;
 
 //SD card initalizer
 File myFile;
 
 //how many readings to take
-int weight_time = 100;
+int weight_time = 20;
 //weight readings
 float weights;
 float avg_weights;
@@ -50,7 +53,7 @@ void setup() {
   setup_lora();
   setup_sd_card();
 
-  loadConfiguration(config);
+  config_str = loadConfiguration(config);
 
   Serial.println(config.boardname);
   Serial.println(config.time_to_send);
@@ -64,12 +67,12 @@ void loop() {
   packetnum++;
   String packetnum_str = "Packet number: "+String(packetnum);
   String weight_str = print_weightscale();
-  String msg = packetnum_str+", "+weight_str;
+  String msg = config_str+", "+packetnum_str+", "+weight_str;
   send_message(msg);
   log_data(msg);
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
-  delay(30000);
+  delay(30);
   
 
 }
@@ -142,7 +145,7 @@ void send_message(String string){
 
 
 
-void loadConfiguration(Config &config) {
+String loadConfiguration(Config &config) {
 
   //switch cs pin
   digitalWrite(8, HIGH);
@@ -154,7 +157,7 @@ void loadConfiguration(Config &config) {
   // Allocate the memory pool on the stack.
   // Don't forget to change the capacity to match your JSON document.
   // Use arduinojson.org/assistant to compute the capacity.
-  StaticJsonDocument<96> doc;
+  StaticJsonDocument<512> doc;
 
   // Parse the root object
   DeserializationError error = deserializeJson(doc, myFile);
@@ -162,12 +165,18 @@ void loadConfiguration(Config &config) {
   if (error) {
     Serial.print("deserializeJson() failed: ");
     Serial.println(error.c_str());
-    return;
+    return "Error";
   }
 
   // Copy values from the JsonObject to the Config
   config.boardname = doc["boardname"]; 
-  config.time_to_send = doc["time_to_send"];  
+  config.hivename = doc["hivename"];
+  config.time_to_send = doc["time_to_send"];
+
+  String boardname_str = "Board name: "+String(config.boardname);
+  String hivename_str = +"Hive name: "+String(config.hivename);
+  //String time_to_send_str = "Send message every: "+String(config.time_to_send)+" minutes";
+  String config_str = boardname_str+", "+hivename_str;
   
 
   // Close the file (File's destructor doesn't close the file)
@@ -176,6 +185,8 @@ void loadConfiguration(Config &config) {
   //switch cs pin
   digitalWrite(8, LOW);
   delay(30);
+
+  return config_str;
 }
 
 void setup_sd_card(){

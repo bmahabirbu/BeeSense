@@ -77,12 +77,13 @@ while True:
         
         #print(float(packet_array[1].split(": ")[1]))
         #checks temperature
-        if float(packet_array[1].split(": ")[1]) > 80.0:
-            display.fill(0)
-            print("Sending Email...")
-            display.text("Sending Email...", 15, 0, 1)
-            subprocess.call("ls", shell=True)
-            subprocess.call("msmtp -t < message.txt", shell=True)
+        if "sensor" in packet_array[0].split(": ")[1]:
+            if float(packet_array[1].split(": ")[1]) > 80.0:
+                display.fill(0)
+                print("Sending Email...")
+                display.text("Sending Email...", 15, 0, 1)
+                subprocess.call("ls", shell=True)
+                subprocess.call("msmtp -t < message.txt", shell=True)
             
         
         try:
