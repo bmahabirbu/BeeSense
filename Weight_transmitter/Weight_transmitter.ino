@@ -37,7 +37,7 @@ float avg_weights;
 
 int packetnum;
 
-#define calibration_factor -7050.0 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor -13490.00 //This value is obtained using the SparkFun_HX711_Calibration sketch
 #define DOUT  6
 #define CLK  5
 
@@ -51,6 +51,7 @@ void setup() {
   Serial.println("Weight scale Lora sensor board code");
 
   setup_lora();
+  setup_rtc();
   setup_sd_card();
 
   config_str = loadConfiguration(config);
@@ -60,6 +61,7 @@ void setup() {
 
   setup_weightscale();
   
+  
 }
 
 void loop() {
@@ -67,12 +69,13 @@ void loop() {
   packetnum++;
   String packetnum_str = "Packet number: "+String(packetnum);
   String weight_str = print_weightscale();
-  String msg = config_str+", "+packetnum_str+", "+weight_str;
+  String rtc_str = print_rtc();
+  String msg = config_str+", "+packetnum_str+", "+weight_str+", "+rtc_str;
   send_message(msg);
   log_data(msg);
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
-  delay(18000);
+  delay(30000);
   
 
 }
@@ -262,5 +265,66 @@ String print_weightscale(){
   
   return weight_str;
   
+}
+
+
+//RTC
+
+void setup_rtc() {
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    Serial.flush();
+    while (1) delay(10);
+  }
+
+  Serial.println("RTC found!");
+
+  rtc.start();
+  float drift = 43; 
+  float period_sec = (7 * 86400);  
+  float deviation_ppm = (drift / period_sec * 1000000); 
+  float drift_unit = 4.34; 
+  // float drift_unit = 4.069; 
+  int offset = round(deviation_ppm / drift_unit);
+  // Un-comment to perform calibration once drift (seconds) and observation period (seconds) are correct
+  // rtc.calibrate(PCF8523_TwoHours, offset); 
+  // Un-comment to cancel previous calibration
+  // rtc.calibrate(PCF8523_TwoHours, 0); 
+  Serial.println("Offset is ");
+  Serial.println(offset); // Print to control offset
+
+  //un-comment to reset RTC
+  
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
+
+
+String print_rtc() {
+  DateTime now = rtc.now();
+  
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
+  Serial.print(" (");
+  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  Serial.print(") ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
+
+  String date_year = String(now.year(), DEC);
+  String date_month = String(now.month(), DEC);
+  String date_day = String(now.day(), DEC);
+  String date_hour = String(now.hour(), DEC);
+  String date_min = String(now.minute(), DEC);
+  String date_sec = String(now.second(), DEC);
+  String date = "Date now: "+date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
+
+  return date;
   
 }
