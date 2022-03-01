@@ -5,6 +5,7 @@
 #include <ArduinoLowPower.h>
 #include <SPI.h>
 #include <RH_RF95.h>
+#include "RTClib.h"
 
 //for feather m0  
 #define RFM95_CS 8
@@ -28,6 +29,10 @@ String config_str;
 
 //SD card initalizer
 File myFile;
+
+//RTC stuff
+RTC_PCF8523 rtc;
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 //how many readings to take
 int weight_time = 20;
@@ -73,9 +78,10 @@ void loop() {
   String msg = config_str+", "+packetnum_str+", "+weight_str+", "+rtc_str;
   send_message(msg);
   log_data(msg);
+  Serial.print("Standby mode");
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
-  delay(30000);
+  delay(40000);
   
 
 }
