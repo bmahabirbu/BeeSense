@@ -86,7 +86,6 @@ while True:
                 display.text("Sending Email...", 15, 0, 1)
                 subprocess.call("ls", shell=True)
                 subprocess.call("msmtp -t < message.txt", shell=True)
-            
         
         try:
         
@@ -96,8 +95,10 @@ while True:
             print("Cant open usb to save excel file")
 
         print(packet_text)
+        print("Sending return awk: ")
+        awk = bytes("Package Received!\r\n","utf-8")
+        rfm9x.send(awk)
         time.sleep(1)
-
-    
+        
     display.show()
     time.sleep(0.1)

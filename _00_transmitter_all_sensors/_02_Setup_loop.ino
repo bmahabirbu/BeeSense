@@ -40,8 +40,40 @@ void loop() {
 
   String msg = config_str+", "+packetnum_str+", "+temp_humid_str+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
   send_message(msg);
+  
+  uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+  uint8_t len = sizeof(buf);
+  int resend_count = 0;
+
+  while (resend_count <= 5)
+  {
+    if (rf95.waitAvailableTimeout(1000))
+    { 
+      // Should be a reply message for us now   
+      if (rf95.recv(buf, &len))
+      {
+        Serial.print("Got reply: ");
+        Serial.println((char*)buf);
+        Serial.print("RSSI: ");
+        Serial.println(rf95.lastRssi(), DEC);
+        continue;    
+      }
+      else
+      {
+        Serial.println("Receive failed");
+        continue;
+      }
+    }
+    else
+    {
+      Serial.println("No reply, Resending packet");
+      send_message(msg);
+      resend_count = resend_count+1;
+    }
+  }
+  
   log_data(msg);
-  Serial.print("Standby mode");
+  Serial.print("Standby mode"); 
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
   delay(60000);
