@@ -19,6 +19,10 @@ void setup() {
    setup_sd_card();
    config_str = loadConfiguration(config);
    Serial.println(config_str);
+
+  //Prototype2 delay
+   delay(30000);
+   Serial.println("First Standbye");
 }
 
 void loop() {
@@ -34,14 +38,12 @@ void loop() {
   String gas_str = print_gas();
   String mic_str = print_mic();
 
-  
-
   String msg = config_str+", "+packetnum_str+", "+temp_humid_str+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
   send_message(msg);
   log_data(msg);
   Serial.print("Standby mode");
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
-  delay(30000);
+  delay(60000);
     
 }

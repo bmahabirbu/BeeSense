@@ -42,13 +42,14 @@ float avg_weights;
 
 int packetnum;
 
-#define calibration_factor -13490.00 //This value is obtained using the SparkFun_HX711_Calibration sketch
+#define calibration_factor -12000.0 //This value is obtained using the SparkFun_HX711_Calibration sketch
 #define DOUT  6
 #define CLK  5
 
 HX711 scale;
 
 void setup() {
+  
   pinMode(13, OUTPUT);
   pinMode(8, OUTPUT);
    
@@ -65,6 +66,10 @@ void setup() {
   Serial.println(config.time_to_send);
 
   setup_weightscale();
+
+  //Delay for prototype2
+  Serial.println("First Standbye");
+  delay(60000);
   
   
 }
@@ -81,7 +86,7 @@ void loop() {
   Serial.print("Standby mode");
   //Only use the lower power function without the need to see print statements 
   //LowPower.deepsleep(config.time_to_send*60*1000);
-  delay(40000);
+  delay(60000);
   
 
 }
@@ -255,16 +260,20 @@ void setup_weightscale(){
 }
 
 String print_weightscale(){
+  
+  avg_weights = 0;
+  weights = 0;
+  
   for (int i = 0; i < weight_time; i++)
   {
     Serial.print("Reading: ");
     Serial.print(scale.get_units(), 1); //scale.get_units() returns a float
     weights = weights+scale.get_units();
     Serial.print(" lbs"); //You can change this to kg but you'll need to refactor the calibration_factor
-    Serial.println();
+    Serial.println(i);
   }
 
-  avg_weights = weights/100;
+  avg_weights = weights/weight_time;
   
   String avg_weights_str = String(avg_weights);
   String weight_str = "weight in lbs is : "+avg_weights_str;
