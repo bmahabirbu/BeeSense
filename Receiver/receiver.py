@@ -68,17 +68,21 @@ while True:
         display.text('- Waiting for PKT -', 15, 20, 1)
     else:
         # Display the packet text and rssi
-        display.fill(0)
-        prev_packet = packet
-        packet_text = str(prev_packet, "utf-8")
-        display.text('RX: ', 0, 0, 1)
-        display.text("Message Received", 25, 0, 1)
-        packet_array = packet_text.split(",")
+        try: 
+            display.fill(0)
+            prev_packet = packet
+            packet_text = str(prev_packet, "utf-8")
+            display.text('RX: ', 0, 0, 1)
+            display.text("Message Received", 25, 0, 1)
+            packet_array = packet_text.split(",")
+        except:
+            continue
         
         #print(float(packet_array[1].split(": ")[1]))
         #checks temperature
-        if "sensor" in packet_array[0].split(": ")[1]:
-            weight_sensor = True
+        boardname = packet_array[0].split(": ")[1]
+        if "sensor" in boardname:
+            weight_sensor = True;
             print("Checking temp: ")
             print(packet_array[3].split(": ")[1])
             if float(packet_array[3].split(": ")[1]) > 80.0:
@@ -87,8 +91,9 @@ while True:
                 display.text("Sending Email...", 15, 0, 1)
                 subprocess.call("ls", shell=True)
                 subprocess.call("msmtp -t < message.txt", shell=True)
-            else:
-                weight_sensor = True;
+        else:
+            weight_sensor = False;
+            
         
         try:
         
@@ -96,21 +101,12 @@ while True:
                 csv.writer(log).writerow(packet_array)
         except:
             print("Cant open usb to save excel file")
-            
-        if weight_sensor = False:
-            print(packet_text)
-            awk = bytes("Package_Received_Weight!","utf-8")
-            print("Sending return awk: ")
-            print(awk)
-            rfm9x.send(awk)
-            time.sleep(1)
-        else:
-            print(packet_text)
-            awk = bytes("Package_Received_Sensor!","utf-8")
-            print("Sending return awk: ")
-            print(awk)
-            rfm9x.send(awk)
-            time.sleep(1)
+
+        print(packet_text)
+        awk = bytes("Package_Received_"+str(boardname),"utf-8")
+        print("Sending return awk: ")
+        print(awk)
+        rfm9x.send(awk)
         
     display.show()
     time.sleep(0.1)

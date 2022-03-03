@@ -21,6 +21,9 @@
 // Change to 434.0 or other frequency, must match RX's freq!
 #define RF95_FREQ 905.5
 
+//TCP stuff
+String awk_name;
+
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 //keep track of packets sent

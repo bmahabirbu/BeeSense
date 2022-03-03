@@ -4,6 +4,9 @@ void setup() {
    pinMode(8, OUTPUT);
    
    Serial.begin(115200);
+   while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB
+  }
 
    //for sd card first
    //lora_switch(false);
@@ -19,6 +22,10 @@ void setup() {
    setup_sd_card();
    config_str = loadConfiguration(config);
    Serial.println(config_str);
+   Serial.print("Time_to_send: ");
+   Serial.println(config.time_to_send);
+
+   awk_name = "Package_Received_"+String(config.boardname);
 
    //Prototype2 delay
    Serial.println("First Standbye");
@@ -55,15 +62,15 @@ void loop() {
       {
         Serial.print("Got reply: ");
         String awk = String((char*)buf);
-        awk = awk.substring(0,24);
+        awk = awk.substring(0,awk_name.length());
         Serial.println(awk);
         Serial.print("RSSI: ");
         Serial.println(rf95.lastRssi(), DEC);
-        if (awk.indexOf("Package Received Sensor!"))
+        if (awk == awk_name)
         {
           Serial.println("Got correct awk!");
           break;
-        }      
+        }    
       }
       else
       {
@@ -78,6 +85,7 @@ void loop() {
       resend_count = resend_count+1;
     }
   }
+
   
   log_data(msg);
   Serial.print("Standby mode"); 

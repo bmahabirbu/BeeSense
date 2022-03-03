@@ -18,6 +18,9 @@
 // Singleton instance of the radio driver
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
 
+//TCP stuff
+String awk_name;
+
 //sd card stuff
 struct Config {
   const char* boardname;
@@ -53,7 +56,7 @@ void setup() {
   pinMode(13, OUTPUT);
   pinMode(8, OUTPUT);
    
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("Weight scale Lora sensor board code");
 
   setup_lora();
@@ -63,7 +66,10 @@ void setup() {
   config_str = loadConfiguration(config);
 
   Serial.println(config.boardname);
+  Serial.print("Time_to_send: ");
   Serial.println(config.time_to_send);
+
+  awk_name = "Package_Received_"+String(config.boardname);
 
   setup_weightscale();
 
@@ -89,18 +95,18 @@ void loop() {
 
   while (resend_count <= 5)
   {
-    if (rf95.waitAvailableTimeout(1000))
+    if (rf95.waitAvailableTimeout(2000))
     { 
       // Should be a reply message for us now   
       if (rf95.recv(buf, &len))
       {
         Serial.print("Got reply: ");
         String awk = String((char*)buf);
-        awk = awk.substring(0,24);
+        awk = awk.substring(0,awk_name.length());
         Serial.println(awk);
         Serial.print("RSSI: ");
         Serial.println(rf95.lastRssi(), DEC);
-        if (awk == "Package_Received_Weight!")
+        if (awk == awk_name)
         {
           Serial.println("Got correct awk!");
           break;
