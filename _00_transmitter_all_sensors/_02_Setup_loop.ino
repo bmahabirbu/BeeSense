@@ -20,9 +20,10 @@ void setup() {
    config_str = loadConfiguration(config);
    Serial.println(config_str);
 
-  //Prototype2 delay
-   delay(30000);
+   //Prototype2 delay
    Serial.println("First Standbye");
+   delay(30000);
+   
 }
 
 void loop() {
@@ -53,15 +54,21 @@ void loop() {
       if (rf95.recv(buf, &len))
       {
         Serial.print("Got reply: ");
-        Serial.println((char*)buf);
+        String awk = String((char*)buf);
+        awk = awk.substring(0,24);
+        Serial.println(awk);
         Serial.print("RSSI: ");
         Serial.println(rf95.lastRssi(), DEC);
-        continue;    
+        if (awk.indexOf("Package Received Sensor!"))
+        {
+          Serial.println("Got correct awk!");
+          break;
+        }      
       }
       else
       {
         Serial.println("Receive failed");
-        continue;
+        break;
       }
     }
     else

@@ -68,8 +68,8 @@ void setup() {
   setup_weightscale();
 
   //Delay for prototype2
-  Serial.println("First Standbye");
-  delay(60000);
+  //Serial.println("First Standbye");
+  //delay(60000);
   
   
 }
@@ -82,6 +82,44 @@ void loop() {
   String rtc_str = print_rtc();
   String msg = config_str+", "+packetnum_str+", "+weight_str+", "+rtc_str;
   send_message(msg);
+  
+  uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+  uint8_t len = sizeof(buf);
+  int resend_count = 0;
+
+  while (resend_count <= 5)
+  {
+    if (rf95.waitAvailableTimeout(1000))
+    { 
+      // Should be a reply message for us now   
+      if (rf95.recv(buf, &len))
+      {
+        Serial.print("Got reply: ");
+        String awk = String((char*)buf);
+        awk = awk.substring(0,24);
+        Serial.println(awk);
+        Serial.print("RSSI: ");
+        Serial.println(rf95.lastRssi(), DEC);
+        if (awk == "Package_Received_Weight!")
+        {
+          Serial.println("Got correct awk!");
+          break;
+        }    
+      }
+      else
+      {
+        Serial.println("Receive failed");
+        break;
+      }
+    }
+    else
+    {
+      Serial.println("No reply, Resending packet");
+      send_message(msg);
+      resend_count = resend_count+1;
+    }
+  }
+
   log_data(msg);
   Serial.print("Standby mode");
   //Only use the lower power function without the need to see print statements 

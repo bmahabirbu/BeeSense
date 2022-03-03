@@ -78,6 +78,7 @@ while True:
         #print(float(packet_array[1].split(": ")[1]))
         #checks temperature
         if "sensor" in packet_array[0].split(": ")[1]:
+            weight_sensor = True
             print("Checking temp: ")
             print(packet_array[3].split(": ")[1])
             if float(packet_array[3].split(": ")[1]) > 80.0:
@@ -86,6 +87,8 @@ while True:
                 display.text("Sending Email...", 15, 0, 1)
                 subprocess.call("ls", shell=True)
                 subprocess.call("msmtp -t < message.txt", shell=True)
+            else:
+                weight_sensor = True;
         
         try:
         
@@ -93,12 +96,21 @@ while True:
                 csv.writer(log).writerow(packet_array)
         except:
             print("Cant open usb to save excel file")
-
-        print(packet_text)
-        print("Sending return awk: ")
-        awk = bytes("Package Received!\r\n","utf-8")
-        rfm9x.send(awk)
-        time.sleep(1)
+            
+        if weight_sensor = False:
+            print(packet_text)
+            awk = bytes("Package_Received_Weight!","utf-8")
+            print("Sending return awk: ")
+            print(awk)
+            rfm9x.send(awk)
+            time.sleep(1)
+        else:
+            print(packet_text)
+            awk = bytes("Package_Received_Sensor!","utf-8")
+            print("Sending return awk: ")
+            print(awk)
+            rfm9x.send(awk)
+            time.sleep(1)
         
     display.show()
     time.sleep(0.1)
