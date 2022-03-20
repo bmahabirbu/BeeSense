@@ -222,13 +222,35 @@ String print_ir() {
 }
 
 String print_mic() {
-  // mic code
-  int mic_value = analogRead(A0);
-  
-  Serial.print("Mic val: ");
-  Serial.println(mic_value);
+   unsigned int sample;
+   unsigned long startMillis= millis();  // Start of sample window
+   unsigned int peakToPeak = 0;   // peak-to-peak level
 
-  String noise_str = String(mic_value);
+   unsigned int signalMax = 0;
+   unsigned int signalMin = 1024;
+
+   // collect data for 50 mS
+   while (millis() - startMillis < 50)
+   {
+      sample = analogRead(A0);
+      if (sample < 1024)  // toss out spurious readings
+      {
+         if (sample > signalMax)
+         {
+            signalMax = sample;  // save just the max levels
+         }
+         else if (sample < signalMin)
+         {
+            signalMin = sample;  // save just the min levels
+         }
+      }
+   }
+   peakToPeak = signalMax - signalMin;  // max - min = peak-peak amplitude
+   double volts = (peakToPeak * 5.0) / 1024;  // convert to volts
+
+  Serial.println(volts);
+
+  String noise_str = String(volts);
   String mic_str = "mic noise: "+noise_str;
 
   return mic_str;
