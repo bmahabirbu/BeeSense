@@ -7,20 +7,15 @@ Current functionality:
 * pi saves data to excel file via USB drive named BEE_DRIVE formatted FAT32
 * pi code launches automatically
 
-Current set of functionalities to add:
+Current functionalities added:
 * Allow for pi to distinguish between multiple boards
 * SD card support
 * Set time delay to send messages/board name from SD card
 * Microphone support (unlikely there is a bug specific to SAMD)
-* TCP to insure packages reach pi (reach goal for sure)
+* TCP to insure packages reach pi 
 * Securtiy sending messages
 
-Prototype testing parameters
-* Can feather read temp, date, IR, gas?
-* Can feather send temp, date, Ir, gas?
-* Can pi receive message?
-* Can pi store message onto usb?
 
 Current problems
-* Mic cant function with other sensors
-* Keep track of pin 8 switches for lora and sd card
+* None
+
