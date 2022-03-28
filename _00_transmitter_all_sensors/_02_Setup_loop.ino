@@ -4,9 +4,6 @@ void setup() {
    pinMode(8, OUTPUT);
    
    Serial.begin(115200);
-   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB
-  }
 
    //for sd card first
    //lora_switch(false);

@@ -65,7 +65,7 @@ String loadConfiguration(Config &config) {
   delay(30);
   
   // Open file for reading
-  myFile = SD.open("config.txt");
+  myFile = SD.open("settings.txt");
 
   // Allocate the memory pool on the stack.
   // Don't forget to change the capacity to match your JSON document.
