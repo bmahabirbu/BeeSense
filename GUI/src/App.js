@@ -1,40 +1,24 @@
-import logo from './Bee.png';
 import './App.css';
 import React from 'react';
-import Form from './Form';
+import { Routes, Route } from 'react-router-dom';
+
+import Layout from './components/Layout';
+import GenerateSettings from './components/GenerateSettings';
+import NoPage from './components/NoPage';
+import Import from './components/Import';
+import Home from './components/Home';
 
 class App extends React.Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      submitted: false,
-    };
-  }
-
-  handler = () => {
-    this.setState({
-      submitted: !this.state.submitted,
-    });
-  }
-
   render () {
     return (
-      <>
-        <div className='logo'>
-          <img src={ logo } alt='Bee' />
-        </div>
-
-        { !this.state.submitted ?
-          <Form handler={ this.handler } />
-          :
-          <>
-            <h3>You can now move the downloaded file onto the USB</h3>
-            <div className='button2'>
-              <button onClick={ this.handler }>Create Another?</button>
-            </div>
-          </>
-        }
-      </>
+      <Routes>
+        <Route path="/" element={ <Layout /> }>
+          <Route index element={ <Home /> } />
+          <Route path="generate" element={ <GenerateSettings /> } />
+          <Route path="import" element={ <Import /> } />
+          <Route path="*" element={ <NoPage /> } />
+        </Route>
+      </Routes>
     );
   }
 }

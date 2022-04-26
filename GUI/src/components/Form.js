@@ -46,7 +46,7 @@ class Form extends React.Component {
     render () {
         return (
             <>
-                <h3>Welcome! Create a new config file for a BeeSense device.</h3>
+                <h3>Welcome! Create a new file for the device.</h3>
                 <form onSubmit={ this.onSubmit }>
                     <div className="field">
                         <input name="boardname" className="input" placeholder=" " onChange={ this.onChange } />
@@ -60,7 +60,7 @@ class Form extends React.Component {
 
                     <div className="field">
                         <input type='text' pattern="[0-9]*" name="time_to_send" className="input" placeholder=" " onChange={ this.onChange } />
-                        <label htmlFor="time_to_send" className="label">Time In Minutes Between Package sent</label>
+                        <label htmlFor="time_to_send" className="label">Time In Minutes</label>
                     </div>
 
                     <div className="button1">
