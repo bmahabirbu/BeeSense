@@ -101,28 +101,28 @@ while True:
         else:
             weight_sensor = True;
             
-        #try:
-        if not os.path.isfile("/media/pi/BEE_DRIVE/messages.csv"):
-            print ("No CSV file creating one ...")
-            try:
-                df = pd.DataFrame(columns=HEADER_CSV)
-                df.to_csv("/media/pi/BEE_DRIVE/messages.csv", index=False)
-            except:
-                print("Error creating csv file!")
-        
-        if weight_sensor == True :
-            print("writing weight sensor data to csv")
-            csv_input = pd.read_csv("/media/pi/BEE_DRIVE/messages.csv")
-            csv_input.at[packet_array[2],'Weight (lbs)'] = packet_array[3]
-            csv_input.to_csv("/media/pi/BEE_DRIVE/messages.csv", index=False)
-        else:
-            print("writing sensor data to csv")
-            with open("/media/pi/BEE_DRIVE/messages.csv", "a", newline='') as log:
-                csv.writer(log).writerow(packet_array)
-            log.close();
+        try:
+            if not os.path.isfile("/media/pi/BEE_DRIVE/messages.csv"):
+                print ("No CSV file creating one ...")
+                try:
+                    df = pd.DataFrame(columns=HEADER_CSV)
+                    df.to_csv("/media/pi/BEE_DRIVE/messages.csv", index=False)
+                except:
+                    print("Error creating csv file!")
+            
+            if weight_sensor == True :
+                print("writing weight sensor data to csv")
+                csv_input = pd.read_csv("/media/pi/BEE_DRIVE/messages.csv")
+                csv_input.at[packet_array[2],'Weight (lbs)'] = packet_array[3]
+                csv_input.to_csv("/media/pi/BEE_DRIVE/messages.csv", index=False)
+            else:
+                print("writing sensor data to csv")
+                with open("/media/pi/BEE_DRIVE/messages.csv", "a", newline='') as log:
+                    csv.writer(log).writerow(packet_array)
+                log.close();
                 
-        #except:
-            #print("Cant open usb to save excel file")
+        except:
+            print("Cant open usb to save excel file")
 
         print(packet_text)
         awk = bytes("Package_Received_"+str(boardname),"utf-8")
