@@ -1,5 +1,8 @@
 # BeeSense
-Sensior Design  Project about Monitoring Bees
+
+![Bee](./assets/Bee.png)
+
+Senior Design  Project about Monitoring Bees
 Lora and Pi setup
 
 Current functionality:
