@@ -113,7 +113,7 @@ while True:
             if weight_sensor == True :
                 print("writing weight sensor data to csv")
                 csv_input = pd.read_csv("/media/pi/BEE_DRIVE/messages.csv")
-                csv_input.at[packet_array[2],'Weight (lbs)'] = packet_array[3]
+                csv_input.at[packet_array[2]-1,'Weight (lbs)'] = packet_array[3]
                 csv_input.to_csv("/media/pi/BEE_DRIVE/messages.csv", index=False)
             else:
                 print("writing sensor data to csv")
