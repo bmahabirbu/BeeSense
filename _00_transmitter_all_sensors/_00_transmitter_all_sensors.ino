@@ -86,8 +86,8 @@ String loadConfiguration(Config &config) {
   config.hivename = doc["hivename"];
   config.time_to_send = doc["time_to_send"];
 
-  String boardname_str = "Board name: "+String(config.boardname);
-  String hivename_str = +"Hive name: "+String(config.hivename);
+  String boardname_str = String(config.boardname);
+  String hivename_str = String(config.hivename);
   //String time_to_send_str = String(config.time_to_send);
   String config_str = boardname_str+", "+hivename_str;
    

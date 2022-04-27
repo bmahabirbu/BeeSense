@@ -5,6 +5,11 @@ void setup() {
    
    Serial.begin(115200);
 
+   while (!Serial) 
+   {
+    ; // wait for serial port to connect. Needed for native USB
+   }
+
    //for sd card first
    //lora_switch(false);
    //after ur done
@@ -34,7 +39,7 @@ void loop() {
   
   packetnum++;
   
-  String packetnum_str = "Packet number: "+String(packetnum);
+  String packetnum_str = String(packetnum);
 
   //print_temp();
   String temp_humid_str = print_temp_humid();
@@ -43,7 +48,7 @@ void loop() {
   String gas_str = print_gas();
   String mic_str = print_mic();
 
-  String msg = config_str+", "+packetnum_str+", "+temp_humid_str+", "+date+", "+ir_str+", "+gas_str+", "+mic_str;
+  String msg = config_str+", "+packetnum_str+", "+temp_humid_str+", "+date+", "+ir_str+" "+gas_str+", "+mic_str;
   send_message(msg);
   
   uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];

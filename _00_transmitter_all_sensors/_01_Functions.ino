@@ -16,7 +16,7 @@ String print_temp_humid(){
   
   String temp_str = String((temp.temperature*9/5)+32, 2);
   String humid_str = String(humidity.relative_humidity, 2);
-  String temp_humid_str = "Temperature F*: "+temp_str+", "+"Humidity %rH: "+humid_str;
+  String temp_humid_str = temp_str+", "+humid_str;
   return temp_humid_str;
 }
 
@@ -125,7 +125,7 @@ String print_rtc() {
   String date_hour = String(now.hour(), DEC);
   String date_min = String(now.minute(), DEC);
   String date_sec = String(now.second(), DEC);
-  String date = "Date now: "+date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
+  String date = date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
 
   return date;
   
@@ -163,25 +163,9 @@ String print_gas() {
   String TVOC_str = String(sgp.TVOC);
   String rawH2_str = String(sgp.rawH2);
   String rawEthanol_str = String(sgp.rawEthanol);
-  String gas_str = "eCo2: "+eco2_str+" ppm, " + "TVOC: "+TVOC_str+" ppb, "+"Raw H2: "+rawH2_str+", "+"Raw Ethanol: "+rawEthanol_str;
+  String gas_str = eco2_str+", "+TVOC_str+", "+rawH2_str+", "+rawEthanol_str;
   
   return gas_str;
- 
-//  delay(1000);
-//
-//  counter++;
-//  if (counter == 30) {
-//    counter = 0;
-//
-//    uint16_t TVOC_base, eCO2_base;
-//    if (! sgp.getIAQBaseline(&eCO2_base, &TVOC_base)) {
-//      Serial.println("Failed to get baseline readings");
-//      return;
-//    }
-//    Serial.print("****Baseline values: eCO2: 0x"); Serial.print(eCO2_base, HEX);
-//    Serial.print(" & TVOC: 0x"); Serial.println(TVOC_base, HEX);
-//  }
-
   
 }
 
@@ -203,9 +187,10 @@ void setup_ir() {
 }
 
 String print_ir() {
-   amg.readPixels(pixels);
-   Serial.println("IR cam temp 8x8 array F*: ");
-   Serial.print("[");
+  amg.readPixels(pixels);
+  Serial.println("IR cam temp 8x8 array F*: ");
+  Serial.print("[");
+  
   for(int i=1; i<=AMG88xx_PIXEL_ARRAY_SIZE; i++){
     Serial.print((pixels[i-1]*9/5)+32);
     Serial.print(", ");
@@ -215,7 +200,7 @@ String print_ir() {
   Serial.println();
 
   String pixel_str = String((pixels[0]*9/5)+32, 2);
-  String ir_str = "First IR pixel temp in F: "+pixel_str;
+  String ir_str = pixel_str;
 
   return ir_str;
   
@@ -251,7 +236,7 @@ String print_mic() {
   Serial.println(volts);
 
   String noise_str = String(volts);
-  String mic_str = "mic noise: "+noise_str;
+  String mic_str = noise_str;
 
   return mic_str;
 

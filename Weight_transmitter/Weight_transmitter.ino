@@ -226,8 +226,8 @@ String loadConfiguration(Config &config) {
   config.hivename = doc["hivename"];
   config.time_to_send = doc["time_to_send"];
 
-  String boardname_str = "Board name: "+String(config.boardname);
-  String hivename_str = +"Hive name: "+String(config.hivename);
+  String boardname_str = String(config.boardname);
+  String hivename_str = String(config.hivename);
   //String time_to_send_str = "Send message every: "+String(config.time_to_send)+" minutes";
   String config_str = boardname_str+", "+hivename_str;
   
@@ -320,7 +320,7 @@ String print_weightscale(){
   avg_weights = weights/weight_time;
   
   String avg_weights_str = String(avg_weights);
-  String weight_str = "weight in lbs is : "+avg_weights_str;
+  String weight_str = avg_weights_str;
   
   return weight_str;
   
@@ -382,7 +382,7 @@ String print_rtc() {
   String date_hour = String(now.hour(), DEC);
   String date_min = String(now.minute(), DEC);
   String date_sec = String(now.second(), DEC);
-  String date = "Date now: "+date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
+  String date = date_year+"/"+date_month+"/"+date_day+"/"+date_hour+":"+date_min+":"+date_sec;
 
   return date;
   
