@@ -25,7 +25,8 @@ import adafruit_ssd1306
 # Import RFM9x
 import adafruit_rfm9x
 #Header column names for CSV
-HEADER_CSV = ["Board name", "Hive name", "Packet number", "Temperature in F", "Humidity %rH", "IR Pixel Temp in F",
+HEADER_CSV = ["Packet number","Temperature in F","Humidity %rH",
+              "Date", "IR Pixel Temp in F",
               "eCo2 (ppm)", "TVOC (ppb)","Raw H2",
               "Raw Ethanol", "Mic Noise", "Weight (lbs)",]
 
@@ -113,14 +114,15 @@ while True:
             if weight_sensor == True :
                 print("writing weight sensor data to csv")
                 csv_input = pd.read_csv("/media/pi/BEE_DRIVE/messages.csv")
-                csv_input.at[packet_array[2]-1,'Weight (lbs)'] = packet_array[3]
+                csv_input.at[int(packet_array[2])-1,'Weight (lbs)'] = packet_array[3]
                 csv_input.to_csv("/media/pi/BEE_DRIVE/messages.csv", index=False)
             else:
                 print("writing sensor data to csv")
-                with open("/media/pi/BEE_DRIVE/messages.csv", "a", newline='') as log:
+                del packet_array[:2]
+                with open("/media/pi/BEE_DRIVE/messages.csv", "a") as log:
                     csv.writer(log).writerow(packet_array)
                 log.close();
-                
+                    
         except:
             print("Cant open usb to save excel file")
 

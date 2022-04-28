@@ -73,17 +73,15 @@ void setup() {
 
   setup_weightscale();
 
-  //Delay for prototype2
-  //Serial.println("First Standbye");
-  //delay(60000);
-  
-  
+  //Prototype2 delay
+   Serial.println("First Standbye");
+   delay(30000);
 }
 
 void loop() {
   
   packetnum++;
-  String packetnum_str = "Packet number: "+String(packetnum);
+  String packetnum_str = String(packetnum);
   String weight_str = print_weightscale();
   String rtc_str = print_rtc();
   String msg = config_str+", "+packetnum_str+", "+weight_str+", "+rtc_str;
