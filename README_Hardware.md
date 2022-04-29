@@ -23,34 +23,34 @@
 | ---- | ----------- | ------ | ---- |
 | Sensor Board (x1) |
 | 1 | LoRa Feather 900MHz | Adafruit | $34.99 |
-| 2 | Adalogger | Adafruit | ---- |
-| 3 | Temperature Humidity Sensor | Adafruit | ---- |
-| 4 | Air Quality Sensor | Adafruit | ---- |
-| 5 | ----------- | Adafruit | ---- |
-| 6 | ----------- | Adafruit | ---- |
-| 7 | ----------- | MicroCenter | ---- |
-| 8 | ----------- | Adafruit | ---- |
-| 9 | ----------- | Adafruit | ---- |
-| 10 | ----------- | Adafruit | ---- |
-| 11 | ----------- | Adafruit | ---- |
-| 12 | ----------- | Adafruit | ---- |
-| 13 | ----------- | Adafruit | ---- |
+| 2 | Adalogger | Adafruit | $17.98 |
+| 3 | Temperature Humidity Sensor | Adafruit | $4.50 |
+| 4 | Air Quality Sensor | Adafruit | $35.00 |
+| 5 | Analogue Microphone | Adafruit | $7.98 |
+| 6 | IR Camera | Adafruit | $44.95 |
+| 7 | SD Card | MicroCenter | $3.99 |
+| 8 | Stemma Cables (x4) | Adafruit | $3.80 |
+| 9 | Female Headers | Adafruit | $0.95 |
+| 10 | 2200mAh LiPo Battery | Adafruit | $9.95 |
+| 11 | CR1220 Coin Cell Battery | Adafruit | $0.95 |
+| 12 | Sensor Board Case  | Adafruit | $7.95 |
+| 13 | Spring Antenna | Adafruit | $0.95 |
 | Scale (x1) |
-| 14 | ----------- | ------ | ---- |
-| 15 | ----------- | ------ | ---- |
-| 16 | ----------- | ------ | ---- |
-| 17 | ----------- | ------ | ---- |
-| 18 | ----------- | ------ | ---- |
-| 19 | ----------- | ------ | ---- |
-| 20 | ----------- | ------ | ---- |
-| 21 | ----------- | ------ | ---- |
-| 22 | ----------- | ------ | ---- |
+| 14 | LoRa Feather 900MHz | Adafruit | $34.99 |
+| 15 | Adalogger | Adafruit | $17.98 |
+| 16 | Load Cell (x4) | SparkFun | $15.80 |
+| 17 | Load Cell Amplifier | SparkFun | $9.95 |
+| 18 | Combinator Board | SparkFun | $1.95 |
+| 19 | SD Card | MicroCenter | $3.99 |
+| 20 | 2200mAh LiPo Battery | Adafruit | $9.95 |
+| 21 | CR1220 Coin Cell Battery | Adafruit | $0.95 |
+| 22 | Spring Antenna | Adafruit | $0.95 |
 | LoRa Gateway |
-| 23 | ----------- | ------ | ---- |
-| 24 | ----------- | ------ | ---- |
-| 25 | ----------- | ------ | ---- |
-| 26 | ----------- | ------ | ---- |
-| 27 | ----------- | ------ | ---- |
+| 23 | Raspberry Pi 3B+ | Adafruit | $35.00 |
+| 24 | Raspberry Pi LoRa Hat | Adafruit | $32.50 |
+| 25 | Raspberry Pi 3B+ Case  | Adafruit | $7.95 |
+| 26 | SD Card | MicroCenter | $3.99 |
+| 27 | Spring Antenna | Adafruit | $0.95 |
 |  | Total Cost |  | $350.84 |
 
 ## <ins>References:</ins>
@@ -79,4 +79,33 @@ For a scale that sends data to the Raspberry Pi every hour (24 times a day), the
 
 * Scale Prototype:
 
-![Scale Prototype]()
+![Scale Prototype 1](./assets/Scale%20Prototype%201.jpg)
+
+![Scale Prototype 2](./assets/Scale%20Prototype%202.jpg)
+
+* Beebox with hardware inside:
+
+![Beebox & Scale](./assets/Beebox%2BScale.jpg)
+
+This is the scale underneath the beebox. We are planning to attach the load cells directly to the bottom of the box, but this was the initial setup. 
+
+![Beebox & Sensor](./assets/Beebox%2BSensor.jpg)
+
+This is the top of the beebox, without the lid. The sensor board requires about 4 inches of space between the top of the box (or the hive frames) and the lid. 
+
+## <ins>Hardware Setup:</ins>
+Feather hardware setup
+1. Connect all sensors using STEMMA cables
+    * Solder microphone following adafruit [directions](https://learn.adafruit.com/adafruit-agc-electret-microphone-amplifier-max9814/)
+
+Weight scale hardware setup
+1. 3D print half load cell brackets x4
+2. Mount brackets with load sensors inside onto a piece of wood that is large enough to accommodate a beebox of the users choosing. You can alternatively attach the load sensors directly to the bottom of a beebox. 
+3. Connect all wires to the HX711 load cell amplifier
+    * Follow diagram above
+4. Connect wires from amp to Feather
+
+
+Raspberry Pi hardware setup
+1. Install LoRa bonnet onto Pi by plugging it in to the 40 pin GPIO
+2. Plug USB drive into USB port
